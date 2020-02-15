@@ -1,0 +1,167 @@
+---
+title: "Assignment1 Part 2"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 2. KM estimates of IMRAW-IST data
+
+```{r read data}
+library(survival)
+IMRAWIST = data.frame(readxl::read_excel("IMRAWandISTnov.xls"))
+IMRAWIST$AMLorDIED = sapply(1:nrow(IMRAWIST), 
+                            function(k) max(IMRAWIST$AML[k], IMRAWIST$DIED[k]))
+IMRAWIST$AMLorDIED_TIME = sapply(1:nrow(IMRAWIST), 
+                                 function(k) min(IMRAWIST$AMLTIME[k], IMRAWIST$survival[k]))
+```
+
+### 2.1 Calculate the KM estimate and its 95% pointwise confidence interval of $S(t)$ for time to death of the IST patients.
+
+```{r}
+IST_DEATH = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                    data = IMRAWIST, subset = (NIH==1))
+plot(IST_DEATH, main = "KM estimate of IST patients for time to death")
+```
+
+
+### 2.2 Calculate the KM estimate and its 95% pointwise confidence interval of $S(t)$ for timeto AML or death of the IST patients.
+
+```{r}
+IST_DEATH_AMLorDIED = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                              data = IMRAWIST, subset = (NIH==1))
+plot(IST_DEATH_AMLorDIED, main = "KM estimate of IST patients for time to AML or death")
+```
+
+### 2.3 Repeat (2.1) and (2.2) for men and women separately.
+
+#### Men
+
+```{r}
+IST_DEATH_Men = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                        data = IMRAWIST, subset = (NIH==1 & GENDER=="M"))
+plot(IST_DEATH_Men, main = "KM estimate of male IST patients for time to death")
+
+IST_DEATH_AMLorDIED_Men = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                  data = IMRAWIST, subset = (NIH==1 & GENDER=="M"))
+plot(IST_DEATH_AMLorDIED_Men, main = "KM estimate of male IST patients for time to AML or death")
+```
+
+#### Women
+
+```{r}
+IST_DEATH_Women = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                          data = IMRAWIST, subset = (NIH==1 & GENDER=="F"))
+plot(IST_DEATH_Women, main = "KM estimate of female IST patients for time to death")
+
+IST_DEATH_AMLorDIED_Women = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                    data = IMRAWIST, subset = (NIH==1 & GENDER=="F"))
+plot(IST_DEATH_AMLorDIED_Women, main = "KM estimate of female IST patients for time to AML or death")
+```
+
+### 2.4 Repeat (2.1) and (2.2) for patients with “IPSS high” and not “IPSS high” separately.
+
+#### IPSS high
+
+```{r}
+IST_DEATH_IPSShigh = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                             data = IMRAWIST, subset = (NIH==1 & IPSS=="High"))
+plot(IST_DEATH_IPSShigh, 
+     main = "KM estimate of IST patients with high IPSS for time to death")
+
+IST_DEATH_AMLorDIED_IPSShigh = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                       data = IMRAWIST, subset = (NIH==1 & IPSS=="High"))
+plot(IST_DEATH_AMLorDIED_IPSShigh, 
+     main = "KM estimate of IST patients with high IPSS for time to AML or death")
+```
+
+#### IPSS not high
+
+```{r}
+IST_DEATH_IPSSnothigh = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                                data = IMRAWIST, subset = (NIH==1 & IPSS!="High"))
+plot(IST_DEATH_IPSSnothigh, 
+     main = "KM estimate of IST patients without high IPSS for time to death")
+
+IST_DEATH_AMLorDIED_IPSSnothigh = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                          data = IMRAWIST, subset = (NIH==1 & IPSS!="High"))
+plot(IST_DEATH_AMLorDIED_IPSSnothigh, 
+     main = "KM estimate of IST patients without high IPSS for time to AML or death")
+```
+
+### 2.5 Calculate the KM estimate and its 95% pointwise confidence interval of $S(t)$ for time to death of the IMRAW patients.
+
+```{r}
+IMRAW_DEATH = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                      data = IMRAWIST, subset = (NIH==0))
+plot(IMRAW_DEATH, main = "KM estimate of IMRAW patients for time to death")
+```
+
+### 2.6  Calculate the KM estimate and its 95% pointwise confidence interval of $S(t)$ for timeto AML or death of the IMRAW patients.
+
+```{r}
+IMRAW_DEATH_AMLorDIED = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                data = IMRAWIST, subset = (NIH==0))
+plot(IMRAW_DEATH_AMLorDIED, main = "KM estimate of IMRAW patients for time to AML or death")
+```
+
+### 2.7 Repeat (2.5) and (2.6) for men and women separately.
+
+#### Men
+
+```{r}
+IMRAW_DEATH_Men = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                          data = IMRAWIST, subset = (NIH==0 & GENDER=="M"))
+plot(IMRAW_DEATH_Men, main = "KM estimate of male IMRAW patients for time to death")
+
+IMRAW_DEATH_AMLorDIED_Men = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                    data = IMRAWIST, subset = (NIH==0 & GENDER=="M"))
+plot(IMRAW_DEATH_AMLorDIED_Men, 
+     main = "KM estimate of male IMRAW patients for time to AML or death")
+```
+
+#### Women
+
+```{r}
+IMRAW_DEATH_Women = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                            data = IMRAWIST, subset = (NIH==0 & GENDER=="F"))
+plot(IMRAW_DEATH_Women, 
+     main = "KM estimate of female IMRAW patients for time to death")
+
+IMRAW_DEATH_AMLorDIED_Women = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                      data = IMRAWIST, subset = (NIH==0 & GENDER=="F"))
+plot(IMRAW_DEATH_AMLorDIED_Women, 
+     main = "KM estimate of female IMRAW patients for time to AML or death")
+```
+
+### 2.8 Repeat (2.5) and (2.6) for patients with “IPSS high” and not “IPSS high” separately.
+
+#### IPSS high
+
+```{r}
+IMRAW_DEATH_IPSShigh = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                               data = IMRAWIST, subset = (NIH==0 & IPSS=="High"))
+plot(IMRAW_DEATH_IPSShigh, 
+     main = "KM estimate of IMRAW patients with high IPSS for time to death")
+
+IMRAW_DEATH_AMLorDIED_IPSShigh = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                         data = IMRAWIST, subset = (NIH==0 & IPSS=="High"))
+plot(IMRAW_DEATH_AMLorDIED_IPSShigh, 
+     main = "KM estimate of IMRAW patients with high IPSS for time to AML or death")
+```
+
+#### IPSS not high
+
+```{r}
+IMRAW_DEATH_IPSSnothigh = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                                  data = IMRAWIST, subset = (NIH==0 & IPSS!="High"))
+plot(IMRAW_DEATH_IPSSnothigh, 
+     main = "KM estimate of IMRAW patients without high IPSS for time to death")
+
+IMRAW_DEATH_AMLorDIED_IPSSnothigh = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                            data = IMRAWIST, subset = (NIH==0 & IPSS!="High"))
+plot(IMRAW_DEATH_AMLorDIED_IPSSnothigh, 
+     main = "KM estimate of IMRAW patients without high IPSS for time to AML or death")
+```
