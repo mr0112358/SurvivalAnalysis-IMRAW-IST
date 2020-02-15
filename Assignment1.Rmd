@@ -22,6 +22,7 @@ IMRAWIST$AMLorDIED_TIME = sapply(1:nrow(IMRAWIST),
 
 ```{r}
 IST_DEATH = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                    type = "kaplan-meier",
                     data = IMRAWIST, subset = (NIH==1))
 plot(IST_DEATH, main = "KM estimate of IST patients for time to death")
 ```
@@ -31,6 +32,7 @@ plot(IST_DEATH, main = "KM estimate of IST patients for time to death")
 
 ```{r}
 IST_DEATH_AMLorDIED = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                              type = "kaplan-meier",
                               data = IMRAWIST, subset = (NIH==1))
 plot(IST_DEATH_AMLorDIED, main = "KM estimate of IST patients for time to AML or death")
 ```
@@ -41,10 +43,12 @@ plot(IST_DEATH_AMLorDIED, main = "KM estimate of IST patients for time to AML or
 
 ```{r}
 IST_DEATH_Men = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                        type = "kaplan-meier",
                         data = IMRAWIST, subset = (NIH==1 & GENDER=="M"))
 plot(IST_DEATH_Men, main = "KM estimate of male IST patients for time to death")
 
 IST_DEATH_AMLorDIED_Men = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                  type = "kaplan-meier",
                                   data = IMRAWIST, subset = (NIH==1 & GENDER=="M"))
 plot(IST_DEATH_AMLorDIED_Men, main = "KM estimate of male IST patients for time to AML or death")
 ```
@@ -53,10 +57,12 @@ plot(IST_DEATH_AMLorDIED_Men, main = "KM estimate of male IST patients for time 
 
 ```{r}
 IST_DEATH_Women = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                          type = "kaplan-meier",
                           data = IMRAWIST, subset = (NIH==1 & GENDER=="F"))
 plot(IST_DEATH_Women, main = "KM estimate of female IST patients for time to death")
 
 IST_DEATH_AMLorDIED_Women = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                    type = "kaplan-meier",
                                     data = IMRAWIST, subset = (NIH==1 & GENDER=="F"))
 plot(IST_DEATH_AMLorDIED_Women, main = "KM estimate of female IST patients for time to AML or death")
 ```
@@ -67,11 +73,13 @@ plot(IST_DEATH_AMLorDIED_Women, main = "KM estimate of female IST patients for t
 
 ```{r}
 IST_DEATH_IPSShigh = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                             type = "kaplan-meier",
                              data = IMRAWIST, subset = (NIH==1 & IPSS=="High"))
 plot(IST_DEATH_IPSShigh, 
      main = "KM estimate of IST patients with high IPSS for time to death")
 
 IST_DEATH_AMLorDIED_IPSShigh = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                       type = "kaplan-meier",
                                        data = IMRAWIST, subset = (NIH==1 & IPSS=="High"))
 plot(IST_DEATH_AMLorDIED_IPSShigh, 
      main = "KM estimate of IST patients with high IPSS for time to AML or death")
@@ -81,11 +89,13 @@ plot(IST_DEATH_AMLorDIED_IPSShigh,
 
 ```{r}
 IST_DEATH_IPSSnothigh = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                                type = "kaplan-meier",
                                 data = IMRAWIST, subset = (NIH==1 & IPSS!="High"))
 plot(IST_DEATH_IPSSnothigh, 
      main = "KM estimate of IST patients without high IPSS for time to death")
 
 IST_DEATH_AMLorDIED_IPSSnothigh = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                          type = "kaplan-meier",
                                           data = IMRAWIST, subset = (NIH==1 & IPSS!="High"))
 plot(IST_DEATH_AMLorDIED_IPSSnothigh, 
      main = "KM estimate of IST patients without high IPSS for time to AML or death")
@@ -95,6 +105,7 @@ plot(IST_DEATH_AMLorDIED_IPSSnothigh,
 
 ```{r}
 IMRAW_DEATH = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                      type = "kaplan-meier",
                       data = IMRAWIST, subset = (NIH==0))
 plot(IMRAW_DEATH, main = "KM estimate of IMRAW patients for time to death")
 ```
@@ -103,6 +114,7 @@ plot(IMRAW_DEATH, main = "KM estimate of IMRAW patients for time to death")
 
 ```{r}
 IMRAW_DEATH_AMLorDIED = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                type = "kaplan-meier",
                                 data = IMRAWIST, subset = (NIH==0))
 plot(IMRAW_DEATH_AMLorDIED, main = "KM estimate of IMRAW patients for time to AML or death")
 ```
@@ -113,10 +125,12 @@ plot(IMRAW_DEATH_AMLorDIED, main = "KM estimate of IMRAW patients for time to AM
 
 ```{r}
 IMRAW_DEATH_Men = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                          type = "kaplan-meier",
                           data = IMRAWIST, subset = (NIH==0 & GENDER=="M"))
 plot(IMRAW_DEATH_Men, main = "KM estimate of male IMRAW patients for time to death")
 
 IMRAW_DEATH_AMLorDIED_Men = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                    type = "kaplan-meier",
                                     data = IMRAWIST, subset = (NIH==0 & GENDER=="M"))
 plot(IMRAW_DEATH_AMLorDIED_Men, 
      main = "KM estimate of male IMRAW patients for time to AML or death")
@@ -126,11 +140,13 @@ plot(IMRAW_DEATH_AMLorDIED_Men,
 
 ```{r}
 IMRAW_DEATH_Women = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                            type = "kaplan-meier",
                             data = IMRAWIST, subset = (NIH==0 & GENDER=="F"))
 plot(IMRAW_DEATH_Women, 
      main = "KM estimate of female IMRAW patients for time to death")
 
 IMRAW_DEATH_AMLorDIED_Women = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                      type = "kaplan-meier",
                                       data = IMRAWIST, subset = (NIH==0 & GENDER=="F"))
 plot(IMRAW_DEATH_AMLorDIED_Women, 
      main = "KM estimate of female IMRAW patients for time to AML or death")
@@ -142,11 +158,13 @@ plot(IMRAW_DEATH_AMLorDIED_Women,
 
 ```{r}
 IMRAW_DEATH_IPSShigh = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                               type = "kaplan-meier",
                                data = IMRAWIST, subset = (NIH==0 & IPSS=="High"))
 plot(IMRAW_DEATH_IPSShigh, 
      main = "KM estimate of IMRAW patients with high IPSS for time to death")
 
 IMRAW_DEATH_AMLorDIED_IPSShigh = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                         type = "kaplan-meier",
                                          data = IMRAWIST, subset = (NIH==0 & IPSS=="High"))
 plot(IMRAW_DEATH_AMLorDIED_IPSShigh, 
      main = "KM estimate of IMRAW patients with high IPSS for time to AML or death")
@@ -156,11 +174,13 @@ plot(IMRAW_DEATH_AMLorDIED_IPSShigh,
 
 ```{r}
 IMRAW_DEATH_IPSSnothigh = survfit(Surv(time = survival, event = DIED) ~ 1, 
+                                  type = "kaplan-meier",
                                   data = IMRAWIST, subset = (NIH==0 & IPSS!="High"))
 plot(IMRAW_DEATH_IPSSnothigh, 
      main = "KM estimate of IMRAW patients without high IPSS for time to death")
 
 IMRAW_DEATH_AMLorDIED_IPSSnothigh = survfit(Surv(time = AMLorDIED_TIME, event = AMLorDIED) ~ 1, 
+                                            type = "kaplan-meier",
                                             data = IMRAWIST, subset = (NIH==0 & IPSS!="High"))
 plot(IMRAW_DEATH_AMLorDIED_IPSSnothigh, 
      main = "KM estimate of IMRAW patients without high IPSS for time to AML or death")
