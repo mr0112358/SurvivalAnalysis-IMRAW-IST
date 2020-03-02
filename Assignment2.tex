@@ -1,0 +1,121 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath, amssymb, amsthm, bm, bbm,graphicx, mathtools, enumerate,multirow}
+\usepackage[letterpaper, left=1.1truein, right=1.1truein, top = 1.1truein,
+bottom = 1.1truein]{geometry}
+\usepackage[affil-it]{authblk}
+\usepackage{natbib}
+\usepackage{hyperref}
+\usepackage[usenames]{color}
+\usepackage[ruled, vlined, lined, commentsnumbered]{algorithm2e}
+\usepackage{prettyref,soul}
+\usepackage{setspace}
+\newcommand{\numit}{\stepcounter{equation}\tag{\theequation}}
+
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\E}{\mbox{{\rm E}}}
+\newcommand{\Var}{\mbox{{\rm Var}}}
+\newcommand{\tr}{\mbox{{\rm tr}}}
+\newcommand{\diag}{\mbox{{\rm diag}}}
+
+\newtheorem{thm}{Theorem}
+\newtheorem{defi}{Definition}
+\newtheorem{lem}{Lemma}
+\newtheorem{coro}{Corollary}
+\newtheorem{prop}{Proposition}
+\newtheorem{ex}{Example}
+\newtheorem{rmk}{Remark}
+\newtheorem{asmp}{Assumption}
+
+\newcommand{\hS}{\hat{S}}
+\newcommand{\hsS}{\hat{S}^{*}}
+\newcommand{\hlam}{\hat{\lambda}}
+\newcommand{\hLam}{\hat{\Lambda}}
+\newcommand{\hsLam}{\hat{\Lambda}^{*}}
+\newcommand{\hF}{\hat{F}}
+\newcommand{\tsF}{{\tilde{F}^{*}}}
+\newcommand{\invtsF}{{\tilde{F}^{*-1}}}
+
+
+\begin{document}
+
+\title{STAT 6227, Assignment \#2}
+%\author{Rui Miao}
+
+\maketitle
+
+\section{Description of Nonparametric Estimators and Bootstrap CIs}
+For subject $i$, let $T_i$ be the time of event of interest and $C_i$ be the
+censoring time. In practice, we only observe i.i.d. data $\left\{ (X_i,
+  \Delta_i) \right\}_{i=1}^n$, where $X_i = T_i\wedge C_i$ is the observation time
+and $\Delta_i = I(T_i<C_i)$ is the indicator of event. Assume $T_i$ is
+independent of $C_i$ for all $i$.
+
+\subsection{Kaplan-Meier (KM) Estimators of $S(t)$}
+Suppose the observed failure times are $t_1<t_2<\dots < t_{n_D}$, where $n_D$ is
+the number of unique times at which deaths are observed. The Kaplan-Meier
+estimator of survival function $S(t) = P(X>t)$ is given by:
+
+\begin{equation}
+\label{eq:KM}
+\hS (t) = \prod_{j:t_j\leq t} \left\{ 1-\frac{D_j}{Y_j} \right\},
+\end{equation}
+
+where $Y_j$ is the number ``at risk'' at $t=t_j$ and $D_j$ is the number of
+failures at $t = t_j$.
+
+Note that the KM estimator $\hS(t)$ is well-defined up to the last observation
+time, $\tau = \max \{X_1,\dots,X_n\}$. If the last observation is censored,
+$\hS(t)$ will not go right down to 0.
+
+\subsection{Nelson-Aalen (NA) Estimators of $\Lambda (t)$}
+
+To estimate cumulative hazard function $\Lambda (t) = \int_0^t \lambda (s) ds =
+-\log S(t)$,
+taking $\hlam (t_j) = D_j/Y_j$, the Nelson-Aalen estimator is
+
+\begin{equation}
+\label{eq:NA}
+\hLam (t) = \sum_{j:t_j\leq t} \frac{D_j}{Y_j}.
+\end{equation}
+
+\subsection{Bootstrap Confidence Intervals}
+Steps for pointwise bootstrap confidence intervals:
+Based on observed data $\left\{ (x_i,\delta_i) \right\}_{i=1}^n$ and a specific
+time point $t$:
+\begin{enumerate}[(a)]
+\item Draw a bootstrap sample $\left\{ (X_i^{*},\Delta_i^{*}) \right\}_{i=1}^n$
+  by independent sampling $n$ times with replacement from $\hF$, the empirical
+  distribution putting mass $1/n$ at each point $(x_i,\delta_i)$;
+\item Based on the bootstrap sample $\left\{ (X_i^{*},\Delta_i^{*})
+  \right\}_{i=1}^n$, calculate $\hsS (t)$ and $\hsLam (t)$;
+\item Independently repeat above steps for $B$ times, obtaining
+  $\hsS_1(t),\dots, \hsS_B(t)$ and $\hsLam_1(t),\dots,\hsLam_B(t)$.
+\item According to the linear interpolated empirical distribution $\tsF_S$ of
+  $\hsS_1(t),\dots, \hsS_B(t)$ or $\tsF_{\Lambda}$ of
+  $\hsLam_1(t),\dots,\hsLam_B(t)$, the $1-\alpha$ bootstrap CI for $S(t)$ is
+
+\begin{equation*}
+  \left[\invtsF_S\left(\frac{\alpha}{2}\right), \invtsF_S\left(1-\frac{\alpha}{2}\right)\right],
+\end{equation*}
+
+  for $\Lambda (t)$ is 
+  
+\begin{equation*}
+\left[\invtsF_{\Lambda}\left(\frac{\alpha}{2}\right), \invtsF_{\Lambda}\left(1-\frac{\alpha}{2}\right)\right],
+\end{equation*}
+
+where $\alpha = 0.05$ for $95\%$ CIs.
+
+\end{enumerate}
+
+\section{Application to the Survival Functions of the IMRAW-IST data}
+
+\section{Application to the Cumulative Harzard Functions of the IMRAW-IST data}
+
+\appendix
+
+\section{R Code}
+
+\end{document}
