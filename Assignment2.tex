@@ -67,7 +67,6 @@ bottom = 1.1truein]{geometry}
 \begin{document}
 
 \title{STAT 6227, Assignment \#2}
-%\author{Rui Miao}
 
 \maketitle
 
@@ -138,23 +137,18 @@ where $\alpha = 0.05$ for $95\%$ CIs.
 
 \section{Application to the Survival Functions of the IMRAW-IST data}
 
-\begin{table}[H]
-\caption{KM estimates of $S(1)$, $S(2)$, $S(5)$
-             with 95\% CIs by Greenwood formula and bootstrap for IMRAW patients} 
-\centering
-\begin{tabular}{rrrr}
-  \hline
-  \hline
- & $\hS(t)$ & [2.5\%, 97.5\%] & Boot [2.5\%, 97.5\%] \\ 
-  \hline
-  year 1 & 0.7395 & [0.7093, 0.7709] & [0.7088, 0.7663] \\ 
-  year 3 & 0.4960 & [0.4605, 0.5342] & [0.4617, 0.5309] \\ 
-  year 5 & 0.3413 & [0.3054, 0.3815] & [0.2977, 0.3782] \\ 
-   \hline
-\end{tabular}
-\end{table}
+We compute the KM estimates for $S(t)$ at $t = 1,3,5$ (in years) and their
+corresponding pointwise 95\% CIs based on $B=500$ bootstraps and Greenwood
+formula for time to death of IST patients (see Table 1) and IMRAW
+patients (see Table 2).
+
+Comparing these two tables, the estimated survival probabilities for IST patients
+are much higher than that for IMRAW patients. The difference becomes larger as
+time goes by. We can hard to tell the difference between pointwise CIs based on
+bootstrap and that based on Greenwood formula.
 
 \begin{table}[H]
+%\label{tab:ISTKM}
 \caption{KM estimates of $S(1)$, $S(2)$, $S(5)$
              with 95\% CIs by Greenwood formula and bootstrap for IST patients} 
 \centering
@@ -170,25 +164,37 @@ where $\alpha = 0.05$ for $95\%$ CIs.
 \end{tabular}
 \end{table}
 
-\section{Application to the Cumulative Harzard Functions of the IMRAW-IST data}
-
 \begin{table}[H]
-\caption{NA estimates of $\Lambda(1)$, $\Lambda(2)$, $\Lambda(5)$ 
-             with 95\% CIs by asymptotics and bootstrap for IMRAW patients} 
+%  \label{tab:IMRAWKM}
+\caption{KM estimates of $S(1)$, $S(2)$, $S(5)$
+             with 95\% CIs by Greenwood formula and bootstrap for IMRAW patients} 
 \centering
 \begin{tabular}{rrrr}
   \hline
   \hline
- & $\hLam(t)$ & [2.5\%, 97.5\%] & Boot [2.5\%, 97.5\%] \\ 
+ & $\hS(t)$ & [2.5\%, 97.5\%] & Boot [2.5\%, 97.5\%] \\ 
   \hline
-  year 1 & 0.3013 & [0.2598, 0.3428] & [0.2655, 0.3432] \\ 
-  year 3 & 0.6998 & [0.6257, 0.7739] & [0.6316, 0.7703] \\ 
-  year 5 & 1.0723 & [0.9613, 1.1832] & [0.9690, 1.2057] \\ 
+  year 1 & 0.7395 & [0.7093, 0.7709] & [0.7088, 0.7663] \\ 
+  year 3 & 0.4960 & [0.4605, 0.5342] & [0.4617, 0.5309] \\ 
+  year 5 & 0.3413 & [0.3054, 0.3815] & [0.2977, 0.3782] \\ 
    \hline
 \end{tabular}
 \end{table}
 
+\section{Application to the Cumulative Harzard Functions of the IMRAW-IST data}
+
+We compute the NA estimates for $\Lambda(t)$ at $t = 1,3,5$ (in years) and their
+corresponding pointwise 95\% CIs based on $B=500$ bootstraps and asymptotics
+for time to death of IST patients (see Table 3) and IMRAW
+patients (see Table 4).
+
+Comparing these two tables, the estimated cumulative harzards for IST patients
+are much smaller than that for IMRAW patients. The difference becomes larger as
+time goes by. We can hard to tell the difference between pointwise CIs based on
+bootstrap and that based on asymptotic distribution.
+
 \begin{table}[H]
+%  \label{tab:ISTNA}
 \caption{NA estimates of $\Lambda(1)$, $\Lambda(2)$, $\Lambda(5)$ 
              with 95\% CIs by asymptotics and bootstrap for IST patients} 
 \centering
@@ -204,11 +210,28 @@ where $\alpha = 0.05$ for $95\%$ CIs.
 \end{tabular}
 \end{table}
 
+\begin{table}[H]
+%  \label{tab:IMRAWNA}
+\caption{NA estimates of $\Lambda(1)$, $\Lambda(2)$, $\Lambda(5)$ 
+             with 95\% CIs by asymptotics and bootstrap for IMRAW patients} 
+\centering
+\begin{tabular}{rrrr}
+  \hline
+  \hline
+ & $\hLam(t)$ & [2.5\%, 97.5\%] & Boot [2.5\%, 97.5\%] \\ 
+  \hline
+  year 1 & 0.3013 & [0.2598, 0.3428] & [0.2655, 0.3432] \\ 
+  year 3 & 0.6998 & [0.6257, 0.7739] & [0.6316, 0.7703] \\ 
+  year 5 & 1.0723 & [0.9613, 1.1832] & [0.9690, 1.2057] \\ 
+   \hline
+\end{tabular}
+\end{table}
+
 \appendix
 
 \section{R Code}
 
-Code is avaliable on 
+Code is avaliable on \url{https://github.com/mr0112358/SurvivalAnalysis-IMRAW-IST/blob/master/Assignment2.R}
 
 \begin{lstlisting}
 # Read Data
