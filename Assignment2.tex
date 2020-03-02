@@ -6,10 +6,35 @@ bottom = 1.1truein]{geometry}
 \usepackage[affil-it]{authblk}
 \usepackage{natbib}
 \usepackage{hyperref}
-\usepackage[usenames]{color}
+\usepackage[usenames,dvipsnames]{color}
 \usepackage[ruled, vlined, lined, commentsnumbered]{algorithm2e}
 \usepackage{prettyref,soul}
+\usepackage{float}
 \usepackage{setspace}
+\usepackage{listings}
+\lstset{ 
+  language=R,                     % the language of the code
+  basicstyle=\tiny\ttfamily, % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\tiny\color{Blue},  % the style that is used for the line-numbers
+  stepnumber=1,                   % the step between two line-numbers. If it is 1, each line
+                                  % will be numbered
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  keywordstyle=\color{RoyalBlue},      % keyword style
+  commentstyle=\color{YellowGreen},   % comment style
+  stringstyle=\color{ForestGreen}      % string literal style
+} 
+
 \newcommand{\numit}{\stepcounter{equation}\tag{\theequation}}
 
 
@@ -112,10 +137,164 @@ where $\alpha = 0.05$ for $95\%$ CIs.
 
 \section{Application to the Survival Functions of the IMRAW-IST data}
 
+\begin{table}[H]
+\centering
+\begin{tabular}{rrrrrr}
+  \hline
+ & hat S(t) & 2.5\% & 97.5\% & 2.5\% Boot & 97.5\% Boot \\ 
+  \hline
+year 1 & 0.7395 & 0.7093 & 0.7709 & 0.7088 & 0.7663 \\ 
+  year 3 & 0.4960 & 0.4605 & 0.5342 & 0.4617 & 0.5309 \\ 
+  year 5 & 0.3413 & 0.3054 & 0.3815 & 0.2977 & 0.3782 \\ 
+   \hline
+\end{tabular}
+\caption{KM estimates of $S(1)$, $S(2)$, $S(5)$
+             with 95\% CIs by Greenwood formula and bootstrap for IMRAW patients} 
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{rrrrrr}
+  \hline
+ & hat S(t) & 2.5\% & 97.5\% & 2.5\% Boot & 97.5\% Boot \\ 
+  \hline
+year 1 & 0.7864 & 0.7181 & 0.8613 & 0.7192 & 0.8560 \\ 
+  year 3 & 0.5837 & 0.5032 & 0.6771 & 0.5005 & 0.6695 \\ 
+  year 5 & 0.5665 & 0.4856 & 0.6609 & 0.4886 & 0.6565 \\ 
+   \hline
+\end{tabular}
+\caption{KM estimates of $S(1)$, $S(2)$, $S(5)$
+             with 95\% CIs by Greenwood formula and bootstrap for IST patients} 
+\end{table}
+
 \section{Application to the Cumulative Harzard Functions of the IMRAW-IST data}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{rrrrrr}
+  \hline
+ & hat S(t) & 2.5\% & 97.5\% & 2.5\% Boot & 97.5\% Boot \\ 
+  \hline
+year 1 & 0.3013 & 0.2598 & 0.3428 & 0.2655 & 0.3432 \\ 
+  year 3 & 0.6998 & 0.6257 & 0.7739 & 0.6316 & 0.7703 \\ 
+  year 5 & 1.0723 & 0.9613 & 1.1832 & 0.9690 & 1.2057 \\ 
+   \hline
+\end{tabular}
+\caption{NA estimates of $\Lambda(1)$, $\Lambda(2)$, $\Lambda(5)$ 
+             with 95\% CIs by Greenwood formula and bootstrap for IMRAW patients} 
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{rrrrrr}
+  \hline
+ & hat S(t) & 2.5\% & 97.5\% & 2.5\% Boot & 97.5\% Boot \\ 
+  \hline
+year 1 & 0.2391 & 0.1486 & 0.3296 & 0.1543 & 0.3265 \\ 
+  year 3 & 0.5352 & 0.3877 & 0.6827 & 0.3978 & 0.6835 \\ 
+  year 5 & 0.5649 & 0.4118 & 0.7181 & 0.4170 & 0.7071 \\ 
+   \hline
+\end{tabular}
+\caption{NA estimates of $\Lambda(1)$, $\Lambda(2)$, $\Lambda(5)$ 
+             with 95\% CIs by Greenwood formula and bootstrap for IST patients} 
+\end{table}
 
 \appendix
 
 \section{R Code}
+
+\begin{lstlisting}
+# Read Data
+library(doParallel)
+library(survival)
+library(xtable)
+IMRAWIST = data.frame(readxl::read_excel("IMRAWandISTnov.xls"))
+IMRAW = subset(IMRAWIST, NIH == 0)
+IST = subset(IMRAWIST, NIH == 1)
+IMRAWIST = list(IMRAW, IST)
+
+# function to find indices of time for years 1, 3 and 5
+findTime = function(survObj){
+  year1 = sum(survObj$time <= 365)
+  year3 = sum(survObj$time <= 1095)
+  year5 = sum(survObj$time <= 1826) # At least one year is leap year
+  c(year1, year3, year5)
+}
+
+registerDoParallel(detectCores())
+
+# KM estimator for survival functions
+KMtables = foreach(d = 1:2) %dopar% {
+dataName = ifelse(d==1, "IMRAW", "IST")
+
+KM_death = survfit(Surv(time = survival, event = DIED) ~ 1,
+                    type = "kaplan-meier",
+                    data = IMRAWIST[[d]])
+
+SurvBoot = foreach(B = 1:500, .combine = 'rbind') %dopar% {
+n = nrow(IMRAWIST[[d]])
+set.seed(B)
+bootIndex = sample.int(n, replace = TRUE)
+KM_death_boot = survfit(Surv(time = survival, event = DIED) ~ 1,
+                    type = "kaplan-meier",
+                    data = IMRAWIST[[d]][bootIndex,])
+
+yearsBoot = findTime(KM_death_boot)
+KM_death_boot$surv[yearsBoot]
+}
+
+years = findTime(KM_death)
+
+TableKM = t(rbind(KM_death$surv[years],
+  KM_death$lower[years],
+  KM_death$upper[years],
+  bootCI = sapply(1:3, function(y) {quantile(SurvBoot[,y], probs = c(0.025, 0.975))})))
+rownames(TableKM) = c("year 1","year 3","year 5")
+colnames(TableKM) = c("hat S(t)", "2.5%", "97.5%", "2.5% Boot", "97.5% Boot")
+xtable(TableKM,digits = 4, 
+             caption = paste0("KM estimates of $S(1)$, $S(2)$, $S(5)$
+             with 95% CIs by Greenwood formula and bootstrap for ", dataName, " patients"))
+}
+
+
+# NA estimator for cumulative hazard function
+NAtables = foreach(d = 1:2) %dopar% {
+dataName = ifelse(d==1, "IMRAW", "IST")
+
+NA_death = survfit(Surv(time = survival, event = DIED) ~ 1,
+                    type = "fleming-harrington",
+                    data = IMRAWIST[[d]])
+
+CumHazardBoot = foreach(B = 1:500, .combine = 'rbind') %dopar% {
+n = nrow(IMRAWIST[[d]])
+set.seed(B)
+bootIndex = sample.int(n, replace = TRUE)
+NA_death_boot = survfit(Surv(time = survival, event = DIED) ~ 1,
+                    type = "fleming-harrington",
+                    data = IMRAWIST[[d]][bootIndex,])
+
+yearsBoot = findTime(NA_death_boot)
+NA_death_boot$cumhaz[yearsBoot]
+}
+
+years = findTime(NA_death)
+
+TableNA = t(rbind(NA_death$cumhaz[years],
+  -log(NA_death$upper[years]),
+  -log(NA_death$lower[years]),
+  bootCI = sapply(1:3, function(y) {quantile(CumHazardBoot[,y], probs = c(0.025, 0.975))})))
+rownames(TableNA) = c("year 1","year 3","year 5")
+colnames(TableNA) = c("hat S(t)", "2.5%", "97.5%", "2.5% Boot", "97.5% Boot")
+xtable(TableNA,digits = 4, 
+             caption = paste0("NA estimates of $\\Lambda(1)$, $\\Lambda(2)$, $\\Lambda(5)$ 
+             with 95% CIs by Greenwood formula and bootstrap for ", dataName, " patients"))
+}
+
+print(KMtables[[1]])
+print(KMtables[[2]])
+print(NAtables[[1]])
+print(NAtables[[2]])
+
+\end{lstlisting}
 
 \end{document}
