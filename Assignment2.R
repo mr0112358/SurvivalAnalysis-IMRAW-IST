@@ -51,7 +51,7 @@ xtable(TableKM,digits = 4,
 }
 
 
-## NA estimator for cumulative hazard function
+# NA estimator for cumulative hazard function
 NAtables = foreach(d = 1:2) %dopar% {
 dataName = ifelse(d==1, "IMRAW", "IST")
 
