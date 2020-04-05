@@ -68,8 +68,7 @@ bottom = 1.1truein]{geometry}
 
 \begin{document}
 
-\title{STAT 6227, Assignment \#2}
-
+\title{STAT 6227, Assignment \#3}
 \maketitle
 
 \section{MLE with Uncensored Data}
@@ -148,6 +147,7 @@ It follows that the joint likelihood
   &:= L(\theta;\bX,\bdelta) L(\gamma;\bX,\bdelta),
 \end{align*}
 where $L(\theta;\bX,\bdelta)$ is the likelihood function related to $\theta$.
+Its logarithm is given below in this setting.
 
 \subsection{MLE $\htheta$ of $\theta$ based on $\left\{
   (X_i,\delta_i): i=1,\dots,n \right\}$}
@@ -157,7 +157,7 @@ The log-likelihood function
  \ell(\theta)  &= \log L(\theta;\bX,\bdelta)\\
   &=\log \left[ \prod_{i=1}^n \left\{ S_{\theta}(X_i)^{1-\delta_i}f_{\theta}(X_i)^{\delta_i} \right\} \right]\\
   &= \log \left[ \exp \left\{ -\theta\sum_{i=1}^n X_i(1-\delta_i) \right\}\theta^{\sum_{i=1}^n\delta_i}\exp \left\{ -\theta\sum_{i=1}^n \delta_iX_i \right\}\right]\\
-  &= \left(\sum_{i=1}^n \delta_i  \right)\log\theta + \theta\sum_{i=1}^n X_i.
+  &= \left(\sum_{i=1}^n \delta_i  \right)\log\theta - \theta\sum_{i=1}^n X_i.
 \end{align*}
 The score function
 \begin{equation*}
