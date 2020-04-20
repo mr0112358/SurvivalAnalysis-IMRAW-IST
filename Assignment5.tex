@@ -70,16 +70,18 @@ bottom = 1.1truein]{geometry}
 \newcommand{\bZ}{{\bf{Z}}}
 \newcommand{\bdelta}{{\bm \delta}}
 \newcommand{\bbeta}{{\bm \beta}}
+\newcommand{\bgamma}{{\bm \gamma}}
 
 
 
 \begin{document}
 
-\title{STAT 6227, Assignment \#4}
+\title{STAT 6227, Assignment \#5}
 \maketitle
 
 \section{Description}
-We consider the IMRAW-IST dataset studied in Sloand et al., (Jouranal of
+As an alternative to HW\#4, we woule like to consider some parametric approaches
+to analyze the IMRAW-IST dataset studied in Sloand et al., (Jouranal of
 Clinical Oncology, 2008, Vol. 26, No. 15, 2505-2511) and would like to model the
 hazard rate for time-to-death $T$ based on the observed censored data
 $\{(T_i,\delta_i):i=1,\dots,n\}$ and the covariates $\{\bZ_i =
@@ -93,86 +95,54 @@ where, for the $i-$th subject, $A_i=$age, $S_i=0$ or $1$ if the subject is
 female or male, respectively, $N_i=$Neuro (ANC), $P_i=$Platelets and $I_i=0$ or
 $1$ if the subject is from the IMRAW cohort or treated at NIH, respectively,
 $\lambda_0(t)$ is the continuous baseline hazard rate and $\bbeta =
-(\beta_1,\dots,\beta_5)^{\top}$ is the vector of parameters. We assume that the
-uncensored time-to-death $T_i^{*}$ and the censoring time $C_i$ are independent,
+(\beta_1,\dots,\beta_5)^{\top}$ is the vector of parameters.
+In order to define a clinically meaningful $\lambda_0(\cdot)$, we define $A_i$,
+$N_i$ and $P_i$ to be the ``centered'' version of age, ANC and platelets, i.e.,
+they are obtained by substracting their mean values from their actual values.
+We assume that the uncensored time-to-death $T_i^{*}$ and the censoring time $C_i$ are independent,
 the subjects are independent and $C_i$ has density $g(t)$ and cumulative
 distribution function $G(t)$.
 
-\section{MLE for unknown form baseline $\lambda_{0}(\cdot)$}
+\section{Survival and likelihood function for different parametric forms of baseline hazard rate $\lambda_{0}(\cdot)$}
+By definition of survival function, 
+\begin{equation}
+\label{eq:SurvFunc}
+\cS{t} = \exp \left\{ -\Lambda_0(t) \exp\{\bbeta^{\top}\bZ_i\} \right\}.
+\end{equation}
+where $\Lambda_0(t) = \int_0^t \lambda_0(s)ds$ is the baseline cumulative hazard function.
 
-Suppose that we have a sample of $n$ independent uncensored survival times
-$\{T_1,\dots,T_n\}$, such that, for each $i = 1,\dots,n$, $T_i$ has the
-exponential distribution with unknown rate parameter $\lambda$.
-The conditional survival function
-\begin{align*}
-  \cS{t} &= P(T_i^{*}>t\mid Z_i)\\
-         &= \exp \left\{ -\int_0^t \lambda_i(s)ds \right\}\\
-  &= \exp \left\{ -\exp\{\bbeta^{\top}\bZ_i\}\int_0^t \lambda_0(s)ds \right\}\\
-  &= \exp \left\{ -\Lambda_0(t) \exp\{\bbeta^{\top}\bZ_i\} \right\}\\
-\end{align*}
-
-By the description, $T_i^{*}$ have density $\cf{\cdot}$ and survival function $\cS{\cdot}$, $C_i$
-have density $g(\cdot)$ and survival function $G(\cdot)$.
-
-For subject $i$:
-
-For $\delta_i=0$,
-\begin{equation*}
-P(T_i=t,\delta_i=0) = P(T_i^{*}>t, C_i=t)=P(T_i^{*}>t)P(C_i=t) = \cS{t}g(t),
-\end{equation*}
-where the event $\left\{ C_i=t \right\}$ is interpreted as $C_i\in (t,t+dt]$.
-
-For $\delta_i=1$,
-\begin{equation*}
-P(T_i=t, \delta_i=1) = P(T_i^{*}=t, C_i>t) = P(T_i^{*}=t, C_i>t) = \cf{t}G_{\gamma}(t),
-\end{equation*}
-where the event $\left\{ T_i^{*}=t \right\}$ is interpreted as $T_i^{*}\in (t,t+dt]$.
-
-So the joint density for subject $i$ is
-\begin{equation*}
-\left( \cS{t_i}g(t_i) \right)^{1-\delta_i}\left( \cf{t_i}G(t_i) \right)^{\delta_i}.
-\end{equation*}
-It follows that the full joint likelihood of the observations
-$\{T_i,\delta_i,\bZ_i:i=1,\dots,n\}$ is
-\begin{align*}
-   &\prod_{i=1}^n \left( \cS{T_i}g(T_i) \right)^{1-\delta_i}\left( \cf{T_i}G(T_i) \right)^{\delta_i}\\
-  =& \prod_{i=1}^n \left\{ \cS{T_i}^{1-\delta_i}\cf{T_i}^{\delta_i} \right\} \prod_{i=1}^n \left\{ g(T_i)^{1-\delta_i} G(T_i)^{\delta_i} \right\}\\
-  =& \prod_{i=1}^n \left\{ \cS{T_i}\clamb{T_i}^{\delta_i} \right\} \prod_{i=1}^n \left\{ g(T_i)^{1-\delta_i} G(T_i)^{\delta_i} \right\}\\
-  :=& L(\lambda_0(\cdot),\bbeta;\bT,\bdelta,\bZ) L(g(\cdot);\bT,\bdelta),
-\end{align*}
-where the first part is the likelihood involves $\lambda_0(\cdot)$ and $\bbeta$:
+From HW \#4, we know that the joint likelihood function of the observations
+$\{T_i, \delta_i,\bZ_i:i=1,\dots,n\}$ as a function of $\lambda_0(\cdot)$,
+$\bbeta$ and $\{T_i, \delta_i,\bZ_i:i=1,\dots,n\}$ is
 \begin{align*}
 L(\lambda_0(\cdot),\bbeta;\bT,\bdelta,\bZ) &= \prod_{i=1}^n \left\{ \cS{T_i}\clamb{T_i}^{\delta_i} \right\}\\
-  &= \prod_{i=1}^n \left\{\exp \left\{ -\Lambda_0(T_i) \exp\{\bbeta^{\top}\bZ_i\} \right\} \left[ \lambda_0(T_i)\exp\{\bbeta^{\top}\bZ_i\} \right]^{\delta_i} \right\},
-  \numit\label{eq:Lik1}
+  &= \prod_{i=1}^n \left\{\exp \left\{ -\Lambda_0(T_i) \exp\{\bbeta^{\top}\bZ_i\} \right\} \left[ \lambda_0(T_i)\exp\{\bbeta^{\top}\bZ_i\} \right]^{\delta_i} \right\}.
+  \numit\label{eq:Lik}
 \end{align*}
-where $\Lambda_0(t) = \int_0^t\lambda_0(s)ds$ is the cumulative hazard funtion.
 
-\section{MLE for known form baseline $\lambda_{0}(\cdot)$}
-Suppose the baseline density $f_0(\cdot)$, corresponding to baseline hazard rate
-$\lambda_0(\cdot)$, has the expression $f_0(t)=abt^{a-1}\exp \{-bt^a\}$ for
-$t\geq 0$ and some unknown parameter $a>0$ and $b>0$.
-Therefore, $S_0(t) = \int_t^{\infty}f_0(s)ds = \exp\{-bt^a\} = \exp\{-\Lambda_0(t)\}$.
-So $\lambda_0(t) = \frac{d}{dt}\Lambda_0(t)= abt^{a-1}$ for $t>0$.
+We consider three parametric assumptions:
 
-Then,
-\begin{equation}
-\label{eq:lam2}
-\lambda_i(t) = \lambda_0(t)\exp\{\bbeta^{\top}\bZ_i\} = abt^{a-1}\exp\{\bbeta^{\top}\bZ_i\}.
-\end{equation}
+\begin{enumerate}
+\item When $\lambda_0(\cdot)$ is hazard rate of $\text{Exp}(\gamma)$, 
+  $\lambda_0(t)=\gamma$ and $\Lambda_0(t)=\gamma t$ in \eqref{eq:SurvFunc} and \eqref{eq:Lik};
+\item When $\lambda_0(\cdot)$ is hazard rate of $\text{Weibull}(\bgamma)$ with
+  $\bgamma=(\gamma_1,\gamma_2)^{\top}$, $\lambda_0(t)=\gamma_1\gamma_2
+  t^{\gamma_1 - 1}$ and $\Lambda_0(t) = \gamma_2 t^{\gamma_1-1}$ in \eqref{eq:SurvFunc} and \eqref{eq:Lik};
+\item When $\lambda_0(\cdot)$ is hazard rate of
+  $\text{log-Normal}(\mu,\sigma^2)$, $\Lambda_0(t) = -\log \left\{ 1- \Phi
+    \left( \frac{\log t - \mu}{\sigma} \right)\right\}$ and $\lambda_0(t) =
+  \frac{d}{dt}\Lambda_0(t) = \frac{\exp \left\{ -\frac{1}{2} \left( \frac{\log t
+      - \mu}{\sigma}^2 \right)\right\}}{\sqrt{2\pi}\sigma t \left\{ 1-\Phi \left(
+      \frac{\log t - \mu}{\sigma} \right) \right\}}$ in \eqref{eq:SurvFunc} and \eqref{eq:Lik}.
+\end{enumerate}
 
-Also,
-\begin{equation}
-\label{eq:S2}
-\cS{t} = \exp \left\{ -\Lambda_0(t) \exp\{\bbeta^{\top}\bZ_i\} \right\} = \exp \left\{ -bt^a \exp\{\bbeta^{\top}\bZ_i\} \right\}.
-\end{equation}
-By \eqref{eq:Lik1}, we have
-\begin{align*}
-L(\lambda_0(\cdot),\bbeta;\bT,\bdelta,\bZ) &= \prod_{i=1}^n \left\{\exp \left\{ -\Lambda_0(T_i) \exp\{\bbeta^{\top}\bZ_i\} \right\} \left[ \lambda_0(T_i)\exp\{\bbeta^{\top}\bZ_i\} \right]^{\delta_i} \right\}\\
-  &= \prod_{i=1}^n \left\{\exp \left\{ -bT_i^a \exp\{\bbeta^{\top}\bZ_i\} \right\} \left[ abT_i^{a-1}\exp\{\bbeta^{\top}\bZ_i\} \right]^{\delta_i} \right\}
-  \numit\label{eq:Lik2}
-\end{align*}
 \section{Application on IMRAW-IST dataset}
+We estimate parameters of $\bbeta$ with p-values and corresponding estimates of
+hazard ratios with 95\% confidence intervals for three parametric assumptions
+aforementioned. The results are summarized in Table 1.
+
+
+
 \begin{enumerate}
 \item We would like to estimate the effects of age, sex, ANC, platelets, and IST
 treatment on the overall survival distributions using this IMRAW-IST dataset and
