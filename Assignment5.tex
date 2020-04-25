@@ -97,7 +97,7 @@ $1$ if the subject is from the IMRAW cohort or treated at NIH, respectively,
 $\lambda_0(t)$ is the continuous baseline hazard rate and $\bbeta =
 (\beta_1,\dots,\beta_5)^{\top}$ is the vector of parameters.
 In order to define a clinically meaningful $\lambda_0(\cdot)$, we define $A_i$,
-$N_i$ and $P_i$ to be the ``centered'' version of age, ANC and platelets, i.e.,
+$N_i$ and $P_i$ to be the ``centered'' version of age, Neutro(ANC) and platelets, i.e.,
 they are obtained by substracting their mean values from their actual values.
 We assume that the uncensored time-to-death $T_i^{*}$ and the censoring time $C_i$ are independent,
 the subjects are independent and $C_i$ has density $g(t)$ and cumulative
@@ -127,7 +127,7 @@ We consider three parametric assumptions:
   $\lambda_0(t)=\gamma$ and $\Lambda_0(t)=\gamma t$ in \eqref{eq:SurvFunc} and \eqref{eq:Lik};
 \item When $\lambda_0(\cdot)$ is hazard rate of $\text{Weibull}(\bgamma)$ with
   $\bgamma=(\gamma_1,\gamma_2)^{\top}$, $\lambda_0(t)=\gamma_1\gamma_2
-  t^{\gamma_1 - 1}$ and $\Lambda_0(t) = \gamma_2 t^{\gamma_1-1}$ in \eqref{eq:SurvFunc} and \eqref{eq:Lik};
+  t^{\gamma_1 - 1}$ and $\Lambda_0(t) = \gamma_2 t^{\gamma_1}$ in \eqref{eq:SurvFunc} and \eqref{eq:Lik};
 \item When $\lambda_0(\cdot)$ is hazard rate of
   $\text{log-Normal}(\mu,\sigma^2)$, $\Lambda_0(t) = -\log \left\{ 1- \Phi
     \left( \frac{\log t - \mu}{\sigma} \right)\right\}$ and $\lambda_0(t) =
