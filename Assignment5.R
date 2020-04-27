@@ -8,11 +8,12 @@ IMRAWIST$PLATE = scale(IMRAWIST$PLATE, center = TRUE, scale = FALSE)
 # Function for summary table
 sumtable = function(survregobj){
   survregSum = summary(survregobj)
-  table = cbind(survregSum$table[2:6,1], survregSum$table[2:6,4], 
+  table = cbind(survregSum$table[2:6,1],
     exp(-survregSum$table[2:6,1]/survregobj$scale), 
     exp(-(survregSum$table[2:6,1] + 1.96*survregSum$table[2:6,2])/survregobj$scale), 
-    exp(-(survregSum$table[2:6,1] - 1.96*survregSum$table[2:6,2])/survregobj$scale))
-  colnames(table) = c("estimate", "p-value", "hazard ratio", "lower CI", "upper CI")
+    exp(-(survregSum$table[2:6,1] - 1.96*survregSum$table[2:6,2])/survregobj$scale),
+    survregSum$table[2:6,4])
+  colnames(table) = c("beta", "hazard ratio", "lower CI", "upper CI", "p-value")
   table
 }
 
