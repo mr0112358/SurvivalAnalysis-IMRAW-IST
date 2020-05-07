@@ -16,9 +16,9 @@ bottom = 1.1truein]{geometry}
 
 \lstset{ 
   language=R,                     % the language of the code
-  basicstyle=\small\ttfamily, % the size of the fonts that are used for the code
+  basicstyle=\tiny\ttfamily, % the size of the fonts that are used for the code
   numbers=left,                   % where to put the line-numbers
-  numberstyle=\small\color{Blue},  % the style that is used for the line-numbers
+  numberstyle=\tiny\color{Blue},  % the style that is used for the line-numbers
   stepnumber=1,                   % the step between two line-numbers. If it is 1, each line
                                   % will be numbered
   numbersep=5pt,                  % how far the line-numbers are from the code
@@ -139,135 +139,136 @@ We consider three parametric assumptions:
 \section{Application on IMRAW-IST dataset}
 We estimate parameters of $\bbeta$ with p-values and corresponding estimates of
 hazard ratios with 95\% confidence intervals for three parametric assumptions
-aforementioned. The results are summarized in Table 1.
+aforementioned.
+
+The hazard ratio (HR) for $\beta_i$ is given by $\psi_i = \exp
+\{-\beta_i/\sigma\}$, $i=1,\dots,5$, where the scale parameter $\sigma=1$ for Exponential baseline,
+$\sigma=1/\gamma_1$ for Weibull$(\gamma_1,\gamma_2)$ baseline and
+$\sigma=\sigma$ for log-Normal$(\mu,\sigma^2)$ baseline.
+
+The results are summarized in Table 1-3 for three different parametric baselines.
+
+\begin{table}[ht]\label{tab:exp}
+\caption{Proportional Harzard Model with Exponential baseline}
+\centering
+\begin{tabular}{rrrrrr}
+  \hline
+  \hline
+  Predictors & $\bbeta$ & HR & lower .95 & upper .95 & p-value \\ 
+  \hline
+AGE & -0.0344 & 1.0350 & 1.0272 & 1.0429 & $<0.0001$ \\ 
+  GENDER(Male) & -0.3504 & 1.4197 & 1.1908 & 1.6926 & 0.0001 \\ 
+  NEUTRO & -0.0273 & 1.0276 & 0.9946 & 1.0618 & 0.1025 \\ 
+  PLATE & 0.0024 & 0.9976 & 0.9969 & 0.9984 & $<0.0001$ \\ 
+  NIH & 0.6682 & 0.5127 & 0.3780 & 0.6953 & $<0.0001$ \\ 
+   \hline
+\end{tabular}
+\end{table}
 
 
+\begin{table}[ht]\label{tab:wei}
+\caption{Proportional Harzard Model with Weibull baseline}
+\centering
+\begin{tabular}{rrrrrr}
+  \hline
+  \hline
+  Predictors & $\bbeta$ & HR & lower .95 & upper .95 & p-value \\ 
+  \hline
+AGE & -0.0375 & 1.0327 & 1.0249 & 1.0406 & $<0.0001$ \\ 
+  GENDER(Male) & -0.3818 & 1.3876 & 1.1633 & 1.6552 & 0.0003 \\ 
+  NEUTRO & -0.0319 & 1.0278 & 0.9957 & 1.0608 & 0.0898 \\ 
+  PLATE & 0.0026 & 0.9978 & 0.9971 & 0.9985 & $<0.0001$ \\ 
+  NIH & 0.7021 & 0.5475 & 0.4040 & 0.7419 & 0.0001 \\ 
+   \hline
+  Scale=1.17\\
+\hline
+\end{tabular}
+\end{table}
 
-\begin{enumerate}
-\item We would like to estimate the effects of age, sex, ANC, platelets, and IST
-treatment on the overall survival distributions using this IMRAW-IST dataset and
-the Cox model \eqref{eq:CoxPH} with the assumption that the baseline hazard rate
-$\lambda_0(t)$ does not have a known parametric form.
 
-\begin{lstlisting}
-# Read Data
-library(survival)
-IMRAWIST = data.frame(readxl::read_excel("IMRAWandISTnov.xls"))
+\begin{table}[ht]\label{tab:log}
+\caption{Proportional Harzard Model with log-Normal baseline}
+\centering
+\begin{tabular}{rrrrrr}
+  \hline
+  \hline
+ Predictors & $\bbeta$ & HR & lower .95 & upper .95 & p-value \\ 
+  \hline
+AGE & -0.0371 & 1.0234 & 1.0176 & 1.0292 & $<0.0001$ \\ 
+  GENDER(Male) & -0.3926 & 1.2773 & 1.1013 & 1.4814 & 0.0012 \\ 
+  NEUTRO & -0.0499 & 1.0316 & 1.0089 & 1.0548 & 0.0061 \\ 
+  PLATE & 0.0031 & 0.9981 & 0.9976 & 0.9986 & $<0.0001$ \\ 
+  NIH & 0.5707 & 0.7006 & 0.5569 & 0.8815 & 0.0024 \\ 
+   \hline
+  Scale=1.6\\
+\hline
+\end{tabular}
+\end{table}
 
-# Cox Model without interaction of treatment and sex
-coxfit1<-coxph(Surv(time = survival, event = DIED, type = "right") 
-                ~ AGE + I(GENDER=="M") + NEUTRO + PLATE + NIH,
-                data = IMRAWIST)
-summary(coxfit1)
-\end{lstlisting}
+\section{Discussion}
 
-\begin{Verbatim}[fontsize=\small]
-Call:
-coxph(formula = Surv(time = survival, event = DIED, type = "right") ~ 
-    AGE + I(GENDER == "M") + NEUTRO + PLATE + NIH, data = IMRAWIST)
+In Table 1-3, the estimate of $\bbeta$ and corresponding hazard ratio are
+similar. The baselines are adjusted for average age, Neutro (ANC) and platelets. In terms of significance at 95\%, Neutro (ANC) is not significant for
+Exponential and Weibull cases, although all HRs of Neutro(ANC) are greater than
+1. Among all of these models, the 2nd model with Weibull baseline is the closest one
+to Cox proportional hazard model with unknown baseline that we fitted in HW \#4.
+Therefore, we focus on Weibull model and try to give some clinical interpretation.
 
-  n= 917, number of events= 554 
-   (28 observations deleted due to missingness)
-
-                           coef  exp(coef)   se(coef)      z Pr(>|z|)    
-AGE                   0.0313555  1.0318523  0.0038434  8.158 3.40e-16 ***
-I(GENDER == "M")TRUE  0.3172310  1.3733198  0.0900924  3.521 0.000430 ***
-NEUTRO                0.0292087  1.0296395  0.0161931  1.804 0.071266 .  
-PLATE                -0.0022129  0.9977895  0.0003635 -6.088 1.14e-09 ***
-NIH                  -0.5570141  0.5729172  0.1565176 -3.559 0.000373 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-                     exp(coef) exp(-coef) lower .95 upper .95
-AGE                     1.0319     0.9691    1.0241    1.0397
-I(GENDER == "M")TRUE    1.3733     0.7282    1.1510    1.6385
-NEUTRO                  1.0296     0.9712    0.9975    1.0628
-PLATE                   0.9978     1.0022    0.9971    0.9985
-NIH                     0.5729     1.7455    0.4216    0.7786
-
-Concordance= 0.644  (se = 0.013 )
-Likelihood ratio test= 165.1  on 5 df,   p=<2e-16
-Wald test            = 141.7  on 5 df,   p=<2e-16
-Score (logrank) test = 144.3  on 5 df,   p=<2e-16
-\end{Verbatim}
-
-The estimates of $\bbeta$ and the corresponding hazard ratios are given above 
-in columns \texttt{coef} and \texttt{exp(coef)} respectively. After adjusting
-age, sex, ANC and platelets, the hazard ratio of IST treatment is 0.5927
-(p-value 0.000373). It shows that IST treatment can significantly lower down
-hazard of death.
-
-\item Suppose that we suspect that the effects of IST on the overall survival
-  time distributions may be different for men and women after adjusting for age,
-  ANC and platelets, while the effects of age, ANC and platelets may be entered
-  as linear terms in \eqref{eq:CoxPH}.
-
-  To take the potential different effects of IST into account for different sex,
-  we add the interaction term of IST:sex. We adjust
-  $\{\bZ_i=(A_i,S_i,N_i,P_i,I_i, S_iI_i)^{\top}:i=1,\dots,n\}$ and $\bbeta =
-  (\beta_1,\dots,\beta_6)$ in model \eqref{eq:CoxPH}. Then $e^{\beta_6}$ is the
-  hazard ratio of the IST effect for male over that for female, after
-  adjusting for age, ANC and platelets.
-
-  The hypotheses for testing the possible different IST effects are
-\begin{equation}
-\label{eq:hypothesis}
-H_0: \beta_6=0\quad\text{v.s.}\quad H_1:\beta_6\neq 0.
-\end{equation}
-
-\begin{lstlisting}
-# Cox Model with interaction of treatment and sex
-coxfit2<-coxph(Surv(time = survival, event = DIED, type = "right") 
-                 ~ AGE + I(GENDER=="M") + NEUTRO + PLATE + NIH 
-                   + I(GENDER=="M"):NIH,
-                 data = IMRAWIST)
-summary(coxfit2)
-\end{lstlisting}
-
-\begin{Verbatim}[fontsize=\small]
-Call:
-coxph(formula = Surv(time = survival, event = DIED, type = "right") ~ 
-    AGE + I(GENDER == "M") + NEUTRO + PLATE + NIH + I(GENDER == 
-        "M"):NIH, data = IMRAWIST)
-
-  n= 917, number of events= 554 
-   (28 observations deleted due to missingness)
-
-                               coef  exp(coef)   se(coef)      z Pr(>|z|)
-AGE                       0.0310526  1.0315397  0.0038508  8.064 7.39e-16 ***
-I(GENDER == "M")TRUE      0.2861726  1.3313222  0.0936597  3.055  0.00225 **
-NEUTRO                    0.0290407  1.0294664  0.0162387  1.788  0.07372 .
-PLATE                    -0.0022068  0.9977957  0.0003631 -6.078 1.22e-09 ***
-NIH                      -0.8649707  0.4210639  0.3201946 -2.701  0.00691 **
-I(GENDER == "M")TRUE:NIH  0.4039306  1.4977000  0.3527289  1.145  0.25214    
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-                         exp(coef) exp(-coef) lower .95 upper .95
-AGE                         1.0315     0.9694    1.0238    1.0394
-I(GENDER == "M")TRUE        1.3313     0.7511    1.1081    1.5996
-NEUTRO                      1.0295     0.9714    0.9972    1.0628
-PLATE                       0.9978     1.0022    0.9971    0.9985
-NIH                         0.4211     2.3749    0.2248    0.7887
-I(GENDER == "M")TRUE:NIH    1.4977     0.6677    0.7502    2.9900
-
-Concordance= 0.644  (se = 0.013 )
-Likelihood ratio test= 166.5  on 6 df,   p=<2e-16
-Wald test            = 139.3  on 6 df,   p=<2e-16
-Score (logrank) test = 144.3  on 6 df,   p=<2e-16
-\end{Verbatim}
-Although the estimated hazard ratio $e^{\hat\beta_6}=1.4977$, meaning IST for
-male is not as good as female, the p-value 0.25214 does not support our
-conclusion. We failed to reject null hypothesis $H_0$. There is no significant
-difference of IST effects between male and female.
-\end{enumerate}
+Clinically speaking, after adjusting for age, Neutro (ANC), platelets, 
+treatment (NIH) and baseline scaling effect (of Weibull and log-Normal), Male
+has much higher risk than female. Not surprisingly, age can increase the risk.
+Neutro (ANC) is not significant. Concentration of platelets is helpful but
+clinically expensive to implement. The IST (immunosupressive treatment) at NIH
+can greatly reduce the hazard rate. For Weibull model, it is also an Accelerated
+Failure Time (AFT) model. The IST has acceleration factor of $e^{-\hat\beta_5}
+= 0.4955$.
 
 
 \appendix
 
 \section{R Code}
 
-Code is avaliable on \url{https://github.com/mr0112358/SurvivalAnalysis-IMRAW-IST/blob/master/Assignment4.R}
+Code is avaliable on \url{https://github.com/mr0112358/SurvivalAnalysis-IMRAW-IST/blob/master/Assignment5.R}
 
+\begin{lstlisting}
+# Read and centralize data
+library(survival)
+IMRAWIST = data.frame(readxl::read_excel("IMRAWandISTnov.xls"))
+IMRAWIST$AGE = scale(IMRAWIST$AGE, center = TRUE, scale = FALSE)
+IMRAWIST$NEUTRO = scale(IMRAWIST$NEUTRO, center = TRUE, scale = FALSE)
+IMRAWIST$PLATE = scale(IMRAWIST$PLATE, center = TRUE, scale = FALSE)
 
+# Function for summary table
+sumtable = function(survregobj){
+  survregSum = summary(survregobj)
+  table = cbind(survregSum$table[2:6,1],
+    exp(-survregSum$table[2:6,1]/survregobj$scale), 
+    exp(-(survregSum$table[2:6,1] + 1.96*survregSum$table[2:6,2])/survregobj$scale), 
+    exp(-(survregSum$table[2:6,1] - 1.96*survregSum$table[2:6,2])/survregobj$scale),
+    survregSum$table[2:6,4])
+  colnames(table) = c("beta", "hazard ratio", "lower CI", "upper CI", "p-value")
+  table
+}
+
+# Cox Model for exponential hazard baseline
+regfit1 <- survreg(Surv(time = survival, event = DIED, type = "right") 
+                ~ AGE + GENDER + NEUTRO + PLATE + NIH,
+                data = IMRAWIST,
+                dist = "exponential")
+sumtable(regfit1)
+
+# Cox Model for Weibull hazard baseline
+regfit2 <- survreg(Surv(time = survival, event = DIED, type = "right") 
+                ~ AGE + GENDER + NEUTRO + PLATE + NIH,
+                data = IMRAWIST,
+                dist = "weibull")
+sumtable(regfit2)
+
+# Cox Model for log-Normal hazard baseline
+regfit3 <- survreg(Surv(time = survival, event = DIED, type = "right") 
+                ~ AGE + GENDER + NEUTRO + PLATE + NIH,
+                data = IMRAWIST,
+                dist = "lognormal")
+sumtable(regfit3)
+\end{lstlisting}
 \end{document}
